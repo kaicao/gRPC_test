@@ -1,0 +1,74 @@
+
+syntax = "proto3";
+
+package grpc.stock;
+
+option java_multiple_files = true;
+option java_package = "no.kaicao.grpc.stock.internal";
+
+enum StockOrderFlag {
+  // Default
+  RECORD_FLAG_UNSPECIFIED = 0;
+
+  DELETED = 1;
+  EXECUTED = 2;
+  PENDING = 3;
+}
+
+enum StockOrderType {
+  STOCK_ORDER_TYPE_UNSPECIFIED = 0;
+  BUY = 1;
+  SELL = 2;
+}
+
+message Stock {
+  // Name of stock e.g. Berkshire Hathaway Inc. Class A
+  string name = 1;
+  // Symbol of stock e.g. BRK.A
+  string symbol = 2;
+  // Stock class e.g. A for Class A shares
+  string stockClass = 3;
+}
+
+message Account {
+  string accountNumber = 1;
+  string ownerName = 2;
+  string bankName = 3;
+}
+
+message StockOrderRequest {
+
+  Account account = 1;
+  Stock stock = 2;
+  StockOrderType orderType = 3;
+  // array of flags
+  repeated StockOrderFlag flags = 4;
+
+  // price of order
+  double price = 5;
+  // issue time (in epoch millis) of the order
+  int64 issueTimestamp = 6;
+
+  map<string, string> properties = 7;
+}
+
+message StockOrderResponse {
+  // UUID generated to uniquely identified the executed order
+  string orderUUID = 1;
+  // order execution time (in epoch millis)
+  int64 executeTimestamp = 2;
+  // executed price
+  double price = 3;
+
+  Stock stock = 4;
+}
+
+service StockOrderSubmissionService {
+  // Accepts a stream of StockOrderRequest, return a stream of StockOrderResponse.
+  // Each time client sends a request, the service expects to response.
+  // Client does not have to wait for service's response before sending next request.
+  rpc submit(stream StockOrderRequest)
+      returns (stream StockOrderResponse) {
+
+  }
+}
