@@ -1,9 +1,10 @@
 package no.kaicao.client.stock;
 
-import com.oracle.tools.packager.Log;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import no.kaicao.grpc.stock.internal.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Clock;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class StockOrderSubmissionClientMain {
 
+  private static final Logger LOG = LoggerFactory.getLogger(StockOrderSubmissionClientMain.class);
   private static final Clock CLOCK = Clock.systemUTC();
 
   public static void main(String[] args) throws InterruptedException {
@@ -30,15 +32,15 @@ public class StockOrderSubmissionClientMain {
     try {
       StockOrderSubmissionClient client = new StockOrderSubmissionClient(channel);
 
-      Log.info("Submit first bulk of orders");
+      LOG.info("Submit first bulk of orders");
       client.submit(createTestOrders1());
       TimeUnit.SECONDS.sleep(5);  // wait in between bulk
 
-      Log.info("Submit second bulk of orders");
+      LOG.info("Submit second bulk of orders");
       client.submit(createTestOrders2());
       TimeUnit.SECONDS.sleep(5);  // wait in between bulk
 
-      Log.info("Submit third bulk of orders");
+      LOG.info("Submit third bulk of orders");
       client.submit(createTestOrders3());
 
       // Give some time to execute before shutdown

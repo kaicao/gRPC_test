@@ -11,7 +11,7 @@
     <modules>
         <module>protobuf-model</module>
         <module>service</module>
-        <module>stock-client</module>
+        <module>client</module>
     </modules>
 
     <build>
